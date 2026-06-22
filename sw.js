@@ -1,7 +1,17 @@
-/* Service worker basique : cache de l'app shell + stratégie réseau-d'abord pour l'API.
-   Objectif portfolio : démontrer une PWA installable et fonctionnelle hors-ligne. */
+/* Service worker : PWA installable + fonctionnement hors-ligne basique.
 
-const CACHE_VERSION = 'meteo-v1';
+   Stratégies :
+   - Navigation (HTML)      -> réseau d'abord (toujours la dernière version),
+                               fallback cache si hors-ligne.
+   - API météo (open-meteo) -> réseau d'abord, fallback cache.
+   - Assets hashés (JS/CSS) -> cache d'abord (immuables car le hash change à
+                               chaque build → l'index.html frais demande les bons).
+
+   ⚠️ Le HTML DOIT être en réseau-d'abord : les noms de fichiers CSS/JS changent
+   à chaque build (CSS Modules), donc un index.html périmé pointerait vers des
+   assets qui n'existent plus → styles cassés. */
+
+const CACHE_VERSION = 'meteo-v2';
 const APP_SHELL = ['./', './index.html', './manifest.json', './icons/icon.svg'];
 
 // Installation : on pré-cache l'app shell.
@@ -12,7 +22,7 @@ self.addEventListener('install', (event) => {
   self.skipWaiting(); // active immédiatement le nouveau SW
 });
 
-// Activation : on supprime les anciens caches.
+// Activation : on supprime les anciens caches (dont meteo-v1).
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches
@@ -20,35 +30,53 @@ self.addEventListener('activate', (event) => {
       .then((keys) =>
         Promise.all(keys.filter((k) => k !== CACHE_VERSION).map((k) => caches.delete(k)))
       )
+      .then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// Interception des requêtes.
+// Réseau d'abord, avec mise en cache de la réponse et fallback cache hors-ligne.
+async function networkFirst(request, fallbackToShell = false) {
+  try {
+    const response = await fetch(request);
+    const copy = response.clone();
+    caches.open(CACHE_VERSION).then((cache) => cache.put(request, copy));
+    return response;
+  } catch {
+    const cached = await caches.match(request);
+    if (cached) return cached;
+    // En dernier recours pour une navigation hors-ligne : l'app shell.
+    if (fallbackToShell) return caches.match('./index.html');
+    throw new Error('Hors-ligne et aucune copie en cache.');
+  }
+}
+
+// Cache d'abord, fallback réseau (pour les assets immuables).
+async function cacheFirst(request) {
+  const cached = await caches.match(request);
+  if (cached) return cached;
+  const response = await fetch(request);
+  const copy = response.clone();
+  caches.open(CACHE_VERSION).then((cache) => cache.put(request, copy));
+  return response;
+}
+
 self.addEventListener('fetch', (event) => {
   const { request } = event;
-
-  // On ne gère que le GET.
   if (request.method !== 'GET') return;
 
   const url = new URL(request.url);
   const isApi = url.hostname.endsWith('open-meteo.com');
+  const isNavigation =
+    request.mode === 'navigate' || request.destination === 'document';
 
-  if (isApi) {
-    // API météo : réseau d'abord, puis fallback cache si hors-ligne.
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE_VERSION).then((cache) => cache.put(request, copy));
-          return response;
-        })
-        .catch(() => caches.match(request))
-    );
+  if (isNavigation) {
+    // HTML : toujours frais quand on est en ligne.
+    event.respondWith(networkFirst(request, true));
+  } else if (isApi) {
+    // API météo : réseau d'abord.
+    event.respondWith(networkFirst(request));
   } else {
-    // App shell / assets : cache d'abord, puis réseau.
-    event.respondWith(
-      caches.match(request).then((cached) => cached || fetch(request))
-    );
+    // JS/CSS/icônes hashés : cache d'abord.
+    event.respondWith(cacheFirst(request));
   }
 });
