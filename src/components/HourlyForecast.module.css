@@ -2,7 +2,10 @@
   background: var(--card);
   border: 1px solid var(--card-border);
   border-radius: var(--radius);
-  padding: 18px 0 18px 18px;
+  padding: 18px;
+  /* Boîte fixe : on borne la largeur pour ne jamais étaler les 24 créneaux.
+     Sur écran large, la boîte reste compacte et le reste se consulte au scroll. */
+  max-width: 440px;
 }
 
 .title {
@@ -14,19 +17,21 @@
 .track {
   display: flex;
   gap: 10px;
-  padding-right: 18px;
-  padding-bottom: 4px;
+  /* scroll horizontal fluide + accroche par créneau */
+  scroll-snap-type: x mandatory;
+  padding-bottom: 6px; /* place pour la barre de défilement */
 }
 
 .cell {
-  flex: 0 0 auto;
-  width: 62px;
+  /* Exactement 5 créneaux visibles (heure actuelle + 4 suivantes) :
+     largeur = (100% - 4 espaces de 10px) / 5. Le 6e dépasse → indique le scroll. */
+  flex: 0 0 calc((100% - 4 * 10px) / 5);
   scroll-snap-align: start;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  padding: 12px 6px;
+  padding: 12px 4px;
   border-radius: var(--radius-sm);
   background: rgba(255, 255, 255, 0.05);
 }
