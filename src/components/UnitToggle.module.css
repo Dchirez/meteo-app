@@ -1,0 +1,21 @@
+.toggle {
+  display: inline-flex;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  padding: 3px;
+}
+
+.btn {
+  min-width: 44px;
+  min-height: 38px;
+  padding: 0 10px;
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.btn.active {
+  background: var(--accent);
+  color: #1a1305;
+}

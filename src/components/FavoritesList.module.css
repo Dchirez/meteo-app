@@ -1,0 +1,53 @@
+.section {
+  /* pas de fond : la liste flotte au-dessus du dégradé */
+}
+
+.title {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.track {
+  display: flex;
+  gap: 8px;
+  padding-bottom: 4px;
+}
+
+.chip {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  padding-right: 4px;
+}
+
+.chip.active {
+  border-color: var(--accent);
+  background: rgba(255, 212, 94, 0.15);
+}
+
+.chipName {
+  padding: 0 6px 0 14px;
+  min-height: var(--tap);
+  font-weight: 600;
+}
+
+.remove {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remove:active {
+  background: rgba(255, 255, 255, 0.12);
+}

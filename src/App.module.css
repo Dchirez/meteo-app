@@ -1,0 +1,93 @@
+/* Mise en page principale — mobile-first, une seule colonne. */
+
+.app {
+  max-width: 720px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  /* on prolonge sous la safe-area top pour les encoches */
+  padding: 14px 16px 12px;
+  background: linear-gradient(180deg, var(--bg-top) 70%, transparent);
+  backdrop-filter: blur(6px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.topRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.main {
+  flex: 1;
+  padding: 4px 16px 16px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+.refreshing {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  padding: 6px 0 12px;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+}
+
+.refreshBtn {
+  min-height: var(--tap);
+  padding: 0 24px;
+  border-radius: 999px;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  font-weight: 600;
+}
+
+.refreshBtn:active {
+  transform: scale(0.97);
+}
+
+.credit {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* Tablette / desktop : on garde une colonne mais on aère.
+   La météo actuelle et l'horaire passent côte à côte ≥ 768px. */
+@media (min-width: 768px) {
+  .content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      'current hourly'
+      'daily   daily';
+  }
+  .content > :nth-child(1) {
+    grid-area: current;
+  }
+  .content > :nth-child(2) {
+    grid-area: hourly;
+  }
+  .content > :nth-child(3) {
+    grid-area: daily;
+  }
+}

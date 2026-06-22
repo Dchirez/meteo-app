@@ -1,0 +1,58 @@
+.section {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 18px;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.list {
+  list-style: none;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 3.2em 2em 1fr auto;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--tap);
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.day {
+  font-weight: 600;
+}
+
+.icon {
+  font-size: 1.4rem;
+  text-align: center;
+}
+
+.rain {
+  font-size: 0.82rem;
+  color: #8fd0ff;
+}
+
+.temps {
+  display: inline-flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.max {
+  font-weight: 600;
+}
+
+.min {
+  color: var(--text-muted);
+}

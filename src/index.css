@@ -1,0 +1,87 @@
+/* ====================================================================
+   Styles globaux — mobile-first.
+   Variables CSS, reset léger, gestion des safe-area (encoches iPhone).
+   ==================================================================== */
+
+:root {
+  /* Palette */
+  --bg-top: #0b1f3a;
+  --bg-bottom: #14365f;
+  --card: rgba(255, 255, 255, 0.08);
+  --card-border: rgba(255, 255, 255, 0.14);
+  --text: #f2f6ff;
+  --text-muted: #a9b8d4;
+  --accent: #ffd45e;
+  --danger: #ff7a7a;
+
+  /* Rayons & espacements */
+  --radius: 18px;
+  --radius-sm: 12px;
+  --gap: 16px;
+
+  /* Cible tactile minimale (accessibilité mobile) */
+  --tap: 44px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text);
+  background: linear-gradient(160deg, var(--bg-top), var(--bg-bottom));
+  background-attachment: fixed;
+  min-height: 100dvh;
+  /* Respect des safe-area : on réserve l'espace sous l'encoche / la barre du bas */
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+    env(safe-area-inset-bottom) env(safe-area-inset-left);
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input {
+  font: inherit;
+}
+
+/* Scroll horizontal fluide sur tactile (prévisions horaires) */
+.scroll-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+
+/* Animation réutilisable pour les skeletons */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+/* Respect de la préférence "réduire les animations" */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
