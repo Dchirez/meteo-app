@@ -16,7 +16,10 @@ Projet personnel de portfolio (BUT Informatique).
 - ⭐ **Villes favorites** persistées dans `localStorage`.
 - 🔁 **Bascule °C / °F** (conversion instantanée côté client).
 - ⚙️ **Gestion des états** : chargement (skeleton), erreur (réseau / ville introuvable), vide.
-- 📱 **PWA installable** (manifest + service worker, fonctionnement hors-ligne basique).
+- 📱 **PWA installable** (manifest + service worker, fonctionnement hors-ligne basique) avec un **bouton « Installer l'app »** intégré :
+  - Android/Chrome/Edge → déclenche l'invite native d'ajout à l'écran d'accueil ;
+  - iOS/Safari → affiche les instructions (Partager → « Sur l'écran d'accueil ») ;
+  - le bouton se masque automatiquement si l'app est déjà installée.
 
 ---
 
