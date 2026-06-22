@@ -1,0 +1,102 @@
+.card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 22px;
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.city {
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.region {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  margin-top: 2px;
+}
+
+.fav {
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--accent);
+  min-width: var(--tap);
+  min-height: var(--tap);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fav:active {
+  transform: scale(0.9);
+}
+
+.main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 14px 0 20px;
+}
+
+.icon {
+  font-size: 4.2rem;
+  line-height: 1;
+}
+
+.tempBlock {
+  display: flex;
+  flex-direction: column;
+}
+
+.temp {
+  font-size: 3.4rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.desc {
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.details {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.detail {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  text-align: center;
+}
+
+.detail dt {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.detail dd {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+/* Desktop : on agrandit un peu la température. */
+@media (min-width: 768px) {
+  .temp {
+    font-size: 4rem;
+  }
+  .icon {
+    font-size: 5rem;
+  }
+}
