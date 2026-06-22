@@ -19,19 +19,41 @@
   gap: 10px;
   /* scroll horizontal fluide + accroche par créneau */
   scroll-snap-type: x mandatory;
-  padding-bottom: 6px; /* place pour la barre de défilement */
+  padding-bottom: 10px; /* place pour la barre de défilement */
+  /* Barre de défilement aux couleurs du site (Firefox) */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 212, 94, 0.55) rgba(255, 255, 255, 0.08);
+}
+
+/* Barre de défilement aux couleurs du site (Chrome / Edge / Safari) */
+.track::-webkit-scrollbar {
+  height: 6px;
+}
+
+.track::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+}
+
+.track::-webkit-scrollbar-thumb {
+  background: rgba(255, 212, 94, 0.55);
+  border-radius: 999px;
+}
+
+.track::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 212, 94, 0.8);
 }
 
 .cell {
-  /* Exactement 5 créneaux visibles (heure actuelle + 4 suivantes) :
-     largeur = (100% - 4 espaces de 10px) / 5. Le 6e dépasse → indique le scroll. */
-  flex: 0 0 calc((100% - 4 * 10px) / 5);
+  /* 4 créneaux visibles (heure actuelle + 3 suivantes), icônes plus grandes :
+     largeur = (100% - 3 espaces de 10px) / 4. Le 5e dépasse → indique le scroll. */
+  flex: 0 0 calc((100% - 3 * 10px) / 4);
   scroll-snap-align: start;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 12px 4px;
+  gap: 10px;
+  padding: 14px 6px;
   border-radius: var(--radius-sm);
   background: rgba(255, 255, 255, 0.05);
 }
@@ -42,14 +64,16 @@
 }
 
 .hour {
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
 }
 
 .icon {
-  font-size: 1.5rem;
+  font-size: 2.4rem;
+  line-height: 1;
 }
 
 .temp {
+  font-size: 1.05rem;
   font-weight: 600;
 }
