@@ -28,7 +28,7 @@
 .row {
   width: 100%;
   display: grid;
-  grid-template-columns: 3.4em 1.8em 3.2em 1fr;
+  grid-template-columns: 3em 1.9em 1fr;
   align-items: center;
   gap: 10px;
   min-height: 46px;
@@ -58,34 +58,40 @@
   text-align: center;
 }
 
-.rain {
-  font-size: 0.8rem;
-  color: #8fd0ff;
-}
-
 .temps {
   display: flex;
   align-items: center;
-  gap: 10px;
-  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* Badge pluie inline (affiché seulement si présent), juste avant la temp. mini */
+.rain {
+  flex: 0 0 auto;
+  font-size: 0.78rem;
+  color: #8fd0ff;
+  white-space: nowrap;
 }
 
 .lo {
   color: var(--text-muted);
   font-weight: 500;
-  width: 2.4em;
+  width: 2.2em;
   text-align: right;
+  flex: 0 0 auto;
 }
 
 .hi {
   font-weight: 600;
-  width: 2.4em;
+  width: 2.2em;
+  flex: 0 0 auto;
 }
 
-/* Barre de plage de température min↔max */
+/* Barre de plage de température min↔max : s'étire pour remplir la ligne
+   (évite le trou entre l'icône et les températures). */
 .bar {
   position: relative;
-  width: 84px;
+  flex: 1;
+  min-width: 36px;
   height: 6px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.12);

@@ -28,8 +28,8 @@ export default function DailyForecast({ rows, selectedIndex, onSelect }) {
                 <span className={styles.icon} aria-hidden="true">
                   {d.icon}
                 </span>
-                <span className={styles.rain}>{d.rainStr}</span>
                 <span className={styles.temps}>
+                  {d.rainStr && <span className={styles.rain}>{d.rainStr}</span>}
                   <span className={styles.lo}>{d.loStr}</span>
                   <span className={styles.bar}>
                     <span
