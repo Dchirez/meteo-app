@@ -13,6 +13,7 @@ import { useWeather } from './hooks/useWeather';
 import { useFavorites } from './hooks/useFavorites';
 import { useGeolocation } from './hooks/useGeolocation';
 import { buildView } from './utils/forecast';
+import { sourceLabel } from './services/openMeteo';
 import styles from './App.module.css';
 
 // Ville par défaut (fallback si géolocalisation refusée/indisponible).
@@ -20,6 +21,7 @@ const DEFAULT_CITY = {
   id: 0,
   name: 'Paris',
   country: 'France',
+  countryCode: 'FR',
   admin1: 'Île-de-France',
   latitude: 48.8566,
   longitude: 2.3522,
@@ -186,7 +188,12 @@ export default function App() {
           </span>{' '}
           Actualiser
         </button>
-        <p className={styles.credit}>Données : Open-Meteo</p>
+        <p className={styles.credit}>
+          Données :{' '}
+          {city
+            ? sourceLabel(city.latitude, city.longitude, city.countryCode)
+            : 'Open-Meteo'}
+        </p>
       </footer>
     </div>
   );
