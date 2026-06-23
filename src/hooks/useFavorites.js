@@ -38,9 +38,10 @@ export function useFavorites() {
     [favorites]
   );
 
+  // Nouveau favori ajouté EN TÊTE : il devient la ville par défaut au chargement.
   const addFavorite = useCallback((city) => {
     setFavorites((prev) =>
-      prev.some((f) => sameCity(f, city)) ? prev : [...prev, city]
+      prev.some((f) => sameCity(f, city)) ? prev : [city, ...prev]
     );
   }, []);
 
@@ -55,7 +56,7 @@ export function useFavorites() {
       setFavorites((prev) =>
         prev.some((f) => sameCity(f, city))
           ? prev.filter((f) => !sameCity(f, city))
-          : [...prev, city]
+          : [city, ...prev]
       );
     },
     []
