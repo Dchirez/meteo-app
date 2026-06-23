@@ -1,6 +1,7 @@
 /* ====================================================================
    Styles globaux — mobile-first.
    Variables CSS, reset léger, gestion des safe-area (encoches iPhone).
+   Design : fond radial + halo, police Inter Tight, scrollbar dégradée.
    ==================================================================== */
 
 :root {
@@ -12,11 +13,12 @@
   --text: #f2f6ff;
   --text-muted: #a9b8d4;
   --accent: #ffd45e;
+  --glow: rgba(86, 148, 214, 0.45);
   --danger: #ff7a7a;
 
   /* Rayons & espacements */
-  --radius: 18px;
-  --radius-sm: 12px;
+  --radius: 22px;
+  --radius-sm: 14px;
   --gap: 16px;
 
   /* Cible tactile minimale (accessibilité mobile) */
@@ -36,9 +38,16 @@ body,
 }
 
 body {
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Inter Tight', system-ui, -apple-system, 'Segoe UI', Roboto,
+    sans-serif;
   color: var(--text);
-  background: linear-gradient(160deg, var(--bg-top), var(--bg-bottom));
+  /* Fond radial du design */
+  background: radial-gradient(
+    120% 80% at 50% -10%,
+    #1d4d82 0%,
+    #14365f 42%,
+    #0b1f3a 100%
+  );
   background-attachment: fixed;
   min-height: 100dvh;
   /* Respect des safe-area : on réserve l'espace sous l'encoche / la barre du bas */
@@ -59,15 +68,64 @@ input {
   font: inherit;
 }
 
-/* Scroll horizontal fluide sur tactile (prévisions horaires) */
+/* Scroll horizontal fluide sur tactile + scrollbar aux couleurs du site */
 .scroll-x {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scroll-snap-type: x proximity;
   scrollbar-width: thin;
+  scrollbar-color: rgba(255, 212, 94, 0.55) transparent;
 }
 
-/* Animation réutilisable pour les skeletons */
+.scroll-x::-webkit-scrollbar {
+  height: 5px;
+}
+
+.scroll-x::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 999px;
+  margin: 0 4px;
+}
+
+.scroll-x::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    90deg,
+    rgba(111, 180, 255, 0.55),
+    rgba(255, 212, 94, 0.65)
+  );
+  border-radius: 999px;
+}
+
+.scroll-x::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    90deg,
+    rgba(111, 180, 255, 0.8),
+    rgba(255, 212, 94, 0.9)
+  );
+}
+
+/* Animations du design */
+@keyframes mFade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes mFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
 @keyframes pulse {
   0%,
   100% {

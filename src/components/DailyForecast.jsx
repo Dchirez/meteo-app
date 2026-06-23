@@ -1,41 +1,45 @@
-import { describeWeather } from '../utils/weatherCodes';
-import { formatTemp, formatDayShort, isToday } from '../utils/format';
 import styles from './DailyForecast.module.css';
 
 /**
- * Prévisions sur 7 jours : icône, min/max, probabilité de pluie.
- * @param {object} daily - bloc `daily` de l'API
- * @param {'C'|'F'} unit
+ * Prévisions sur 7 jours : icône, probabilité de pluie, barre de plage min↔max.
+ * Chaque ligne est cliquable et met à jour la carte principale.
+ * @param {Array} rows - {index, dayLabel, icon, rainStr, hiStr, loStr, barLeft, barWidth}
+ * @param {number|null} selectedIndex
+ * @param {(index:number) => void} onSelect
  */
-export default function DailyForecast({ daily, unit }) {
-  if (!daily?.time) return null;
+export default function DailyForecast({ rows, selectedIndex, onSelect }) {
+  if (!rows?.length) return null;
 
   return (
     <section className={styles.section} aria-label="Prévisions sur 7 jours">
       <h2 className={styles.title}>7 prochains jours</h2>
       <ul className={styles.list}>
-        {daily.time.map((date, i) => {
-          const { icon, label } = describeWeather(daily.weather_code[i], true);
-          const rain = daily.precipitation_probability_max?.[i];
+        {rows.map((d) => {
+          const selected = d.index === selectedIndex;
           return (
-            <li key={date} className={styles.row}>
-              <span className={styles.day}>
-                {isToday(date) ? "Auj." : formatDayShort(date)}
-              </span>
-              <span className={styles.icon} aria-hidden="true" title={label}>
-                {icon}
-              </span>
-              <span className={styles.rain}>
-                {rain != null ? `💧 ${rain}%` : ''}
-              </span>
-              <span className={styles.temps}>
-                <span className={styles.max}>
-                  {formatTemp(daily.temperature_2m_max[i], unit)}
+            <li key={d.index}>
+              <button
+                type="button"
+                onClick={() => onSelect(d.index)}
+                className={`${styles.row} ${selected ? styles.selected : ''}`}
+                aria-pressed={selected}
+              >
+                <span className={styles.day}>{d.dayLabel}</span>
+                <span className={styles.icon} aria-hidden="true">
+                  {d.icon}
                 </span>
-                <span className={styles.min}>
-                  {formatTemp(daily.temperature_2m_min[i], unit)}
+                <span className={styles.rain}>{d.rainStr}</span>
+                <span className={styles.temps}>
+                  <span className={styles.lo}>{d.loStr}</span>
+                  <span className={styles.bar}>
+                    <span
+                      className={styles.barFill}
+                      style={{ left: `${d.barLeft}%`, width: `${d.barWidth}%` }}
+                    />
+                  </span>
+                  <span className={styles.hi}>{d.hiStr}</span>
                 </span>
-              </span>
+              </button>
             </li>
           );
         })}

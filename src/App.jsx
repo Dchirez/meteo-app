@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import SearchBar from './components/SearchBar';
 import UnitToggle from './components/UnitToggle';
 import CurrentWeather from './components/CurrentWeather';
@@ -12,6 +12,7 @@ import EmptyState from './components/states/EmptyState';
 import { useWeather } from './hooks/useWeather';
 import { useFavorites } from './hooks/useFavorites';
 import { useGeolocation } from './hooks/useGeolocation';
+import { buildView } from './utils/forecast';
 import styles from './App.module.css';
 
 // Ville par défaut (fallback si géolocalisation refusée/indisponible).
@@ -24,14 +25,25 @@ const DEFAULT_CITY = {
   longitude: 2.3522,
 };
 
+const NOW_SELECTION = { kind: 'now' };
+
 export default function App() {
   const [city, setCity] = useState(null); // ville sélectionnée
   const [unit, setUnit] = useState('C'); // 'C' | 'F'
   const [refreshing, setRefreshing] = useState(false);
+  const [spinning, setSpinning] = useState(false);
+  // Sélection pilotant la carte principale : maintenant / une heure / un jour.
+  const [selection, setSelection] = useState(NOW_SELECTION);
 
   const { locate } = useGeolocation();
   const { favorites, isFavorite, toggleFavorite, removeFavorite } = useFavorites();
   const { data, loading, error, refetch } = useWeather(city);
+
+  // Changer de ville réinitialise la sélection sur « Maintenant ».
+  function selectCity(c) {
+    setCity(c);
+    setSelection(NOW_SELECTION);
+  }
 
   // Sélection de la ville initiale, au montage uniquement (deps vides) :
   // on ne dépend PAS de `favorites` pour ne pas réinitialiser la ville à chaque
@@ -60,11 +72,19 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Rafraîchissement manuel (bouton ↻ / pull-to-refresh).
+  // Vues d'affichage dérivées (recalculées si données / unité / sélection changent).
+  const view = useMemo(
+    () => (data ? buildView(data, unit, selection) : null),
+    [data, unit, selection]
+  );
+
+  // Rafraîchissement manuel (bouton ↻ / pull-to-refresh) avec animation de rotation.
   async function handleRefresh() {
     setRefreshing(true);
+    setSpinning(true);
     await refetch();
     setRefreshing(false);
+    setTimeout(() => setSpinning(false), 600);
   }
 
   // --- Pull-to-refresh tactile basique ---
@@ -73,7 +93,6 @@ export default function App() {
     let pulling = false;
 
     function onTouchStart(e) {
-      // Uniquement si on est tout en haut de la page.
       if (window.scrollY === 0) {
         startY = e.touches[0].clientY;
         pulling = true;
@@ -82,7 +101,7 @@ export default function App() {
     function onTouchEnd(e) {
       if (!pulling) return;
       const delta = e.changedTouches[0].clientY - startY;
-      if (delta > 80) handleRefresh(); // tiré vers le bas > 80px
+      if (delta > 80) handleRefresh();
       pulling = false;
     }
 
@@ -95,29 +114,28 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refetch]);
 
-  const current = data?.current;
-
   return (
     <div className={styles.app}>
-      {/* En-tête sticky : recherche + unité */}
+      {/* Halo lumineux décoratif (glow) */}
+      <div className={styles.glow} aria-hidden="true" />
+
+      {/* En-tête sticky : recherche + unité + favoris */}
       <header className={styles.header}>
         <div className={styles.topRow}>
-          <SearchBar onSelect={setCity} />
+          <SearchBar onSelect={selectCity} />
           <UnitToggle unit={unit} onChange={setUnit} />
         </div>
         <FavoritesList
           favorites={favorites}
           activeCity={city}
-          onSelect={setCity}
+          onSelect={selectCity}
           onRemove={removeFavorite}
         />
       </header>
 
       <main className={styles.main}>
-        {/* Indicateur de rafraîchissement */}
         {refreshing && <div className={styles.refreshing}>Actualisation…</div>}
 
-        {/* Gestion des états : vide / chargement / erreur / données */}
         {!city && <EmptyState />}
 
         {city && loading && !data && <Skeleton />}
@@ -126,17 +144,27 @@ export default function App() {
           <ErrorState message={error} onRetry={refetch} />
         )}
 
-        {city && data && (
+        {city && data && view && (
           <div className={styles.content}>
             <CurrentWeather
-              current={current}
+              hero={view.hero}
               city={city}
-              unit={unit}
               isFavorite={isFavorite(city)}
               onToggleFavorite={() => toggleFavorite(city)}
+              onReset={() => setSelection(NOW_SELECTION)}
             />
-            <HourlyForecast hourly={data.hourly} unit={unit} />
-            <DailyForecast daily={data.daily} unit={unit} />
+            <div className={styles.grid}>
+              <HourlyForecast
+                cells={view.hourlyCells}
+                selectedIndex={selection.kind === 'hour' ? selection.index : null}
+                onSelect={(index) => setSelection({ kind: 'hour', index })}
+              />
+              <DailyForecast
+                rows={view.dailyRows}
+                selectedIndex={selection.kind === 'day' ? selection.index : null}
+                onSelect={(index) => setSelection({ kind: 'day', index })}
+              />
+            </div>
           </div>
         )}
       </main>
@@ -150,7 +178,13 @@ export default function App() {
           onClick={handleRefresh}
           aria-label="Actualiser"
         >
-          ↻ Actualiser
+          <span
+            className={styles.refreshIcon}
+            style={{ transform: `rotate(${spinning ? 360 : 0}deg)` }}
+          >
+            ↻
+          </span>{' '}
+          Actualiser
         </button>
         <p className={styles.credit}>Données : Open-Meteo</p>
       </footer>
