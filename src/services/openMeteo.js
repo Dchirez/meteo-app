@@ -87,6 +87,45 @@ async function fetchForecast(params, signal) {
   return res.json();
 }
 
+/** Comble les champs nuls d'un objet (ex. `current`) avec ceux d'un fallback. */
+function fillNullFields(primary, fallback) {
+  if (!primary || !fallback) return;
+  for (const key of Object.keys(fallback)) {
+    if (primary[key] == null) primary[key] = fallback[key];
+  }
+}
+
+/** Comble, index par index, les valeurs nulles des tableaux (hourly/daily). */
+function fillNullArrays(primary, fallback) {
+  if (!primary || !fallback) return;
+  for (const key of Object.keys(fallback)) {
+    if (key === 'time') continue;
+    const fb = fallback[key];
+    if (!Array.isArray(fb)) continue;
+    if (!Array.isArray(primary[key])) {
+      primary[key] = fb.slice();
+      continue;
+    }
+    for (let i = 0; i < fb.length; i++) {
+      if (primary[key][i] == null) primary[key][i] = fb[i];
+    }
+  }
+}
+
+/**
+ * Fusionne deux prévisions : `primary` (Météo-France, précis mais ~4 jours)
+ * complété par `fallback` (best_match, 7 jours) pour tous les trous (jours 5-7,
+ * heures non couvertes, et la probabilité de pluie que Météo-France ne fournit pas).
+ */
+function mergeForecast(primary, fallback) {
+  if (!primary) return fallback;
+  if (!fallback) return primary;
+  fillNullFields(primary.current, fallback.current);
+  fillNullArrays(primary.hourly, fallback.hourly);
+  fillNullArrays(primary.daily, fallback.daily);
+  return primary;
+}
+
 /**
  * Récupère les prévisions (actuel + horaire + 7 jours) pour des coordonnées.
  *
@@ -121,27 +160,16 @@ export async function getForecast(latitude, longitude, signal, opts = {}) {
     return fetchForecast(new URLSearchParams(baseFields), signal);
   }
 
-  // France : températures Météo-France + proba de pluie best_match (en parallèle).
+  // France : Météo-France (précis, ~4 jours) + best_match (couverture 7 jours
+  // + proba de pluie) en parallèle, puis fusion pour combler tous les trous.
   const mfParams = new URLSearchParams(baseFields);
   mfParams.set('models', 'meteofrance_seamless');
 
-  const rainParams = new URLSearchParams({
-    latitude,
-    longitude,
-    daily: 'precipitation_probability_max',
-    timezone: 'auto',
-    forecast_days: '7',
-  });
-
-  const [data, rain] = await Promise.all([
+  const [primary, fallback] = await Promise.all([
     fetchForecast(mfParams, signal),
-    // La proba de pluie est secondaire : si elle échoue, on garde le reste.
-    fetchForecast(rainParams, signal).catch(() => null),
+    // Le fallback est best-effort : s'il échoue, on garde Météo-France seul.
+    fetchForecast(new URLSearchParams(baseFields), signal).catch(() => null),
   ]);
 
-  if (data?.daily && rain?.daily?.precipitation_probability_max) {
-    data.daily.precipitation_probability_max =
-      rain.daily.precipitation_probability_max;
-  }
-  return data;
+  return mergeForecast(primary, fallback);
 }
