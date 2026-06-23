@@ -1,6 +1,10 @@
 .container {
   position: relative;
-  width: 100%;
+  /* Élément flex de l'en-tête : flex:1 pour occuper l'espace, min-width:0 pour
+     POUVOIR rétrécir sous la largeur de son contenu (sinon il pousse le
+     sélecteur °C/°F hors de l'écran sur mobile). */
+  flex: 1;
+  min-width: 0;
 }
 
 .inputWrap {
@@ -21,6 +25,7 @@
 
 .input {
   flex: 1;
+  min-width: 0; /* autorise le champ à rétrécir au lieu de déborder */
   min-height: var(--tap);
   background: transparent;
   border: none;
