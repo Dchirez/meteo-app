@@ -20,7 +20,8 @@ export function useWeather(location) {
         const result = await getForecast(
           location.latitude,
           location.longitude,
-          signal
+          signal,
+          { countryCode: location.countryCode }
         );
         setData(result);
       } catch (err) {
