@@ -1,79 +1,74 @@
 .section {
-  background: var(--card);
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius);
+  min-width: 0;
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.09),
+    rgba(255, 255, 255, 0.045)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 20px;
   padding: 18px;
-  /* Boîte fixe : on borne la largeur pour ne jamais étaler les 24 créneaux.
-     Sur écran large, la boîte reste compacte et le reste se consulte au scroll. */
-  max-width: 440px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  animation: mFade 0.5s ease 0.06s both;
 }
 
 .title {
-  font-size: 1rem;
+  font-size: 0.78rem;
   font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
   margin-bottom: 14px;
+  text-transform: uppercase;
 }
 
 .track {
+  min-width: 0;
   display: flex;
-  gap: 10px;
-  /* scroll horizontal fluide + accroche par créneau */
-  scroll-snap-type: x mandatory;
-  padding-bottom: 10px; /* place pour la barre de défilement */
-  /* Barre de défilement aux couleurs du site (Firefox) */
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 212, 94, 0.55) rgba(255, 255, 255, 0.08);
-}
-
-/* Barre de défilement aux couleurs du site (Chrome / Edge / Safari) */
-.track::-webkit-scrollbar {
-  height: 6px;
-}
-
-.track::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 999px;
-}
-
-.track::-webkit-scrollbar-thumb {
-  background: rgba(255, 212, 94, 0.55);
-  border-radius: 999px;
-}
-
-.track::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 212, 94, 0.8);
+  gap: 8px;
+  padding-bottom: 8px;
 }
 
 .cell {
-  /* 4 créneaux visibles (heure actuelle + 3 suivantes), icônes plus grandes :
-     largeur = (100% - 3 espaces de 10px) / 4. Le 5e dépasse → indique le scroll. */
-  flex: 0 0 calc((100% - 3 * 10px) / 4);
+  flex: 0 0 64px;
   scroll-snap-align: start;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 9px;
   padding: 14px 6px;
-  border-radius: var(--radius-sm);
+  border-radius: 14px;
   background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  transition: transform 0.12s, background 0.15s, border-color 0.15s;
 }
 
+.cell:active {
+  transform: scale(0.96);
+}
+
+/* Heure courante */
 .cell.now {
-  background: rgba(255, 212, 94, 0.18);
-  border: 1px solid rgba(255, 212, 94, 0.4);
+  background: rgba(255, 212, 94, 0.16);
+  border-color: rgba(255, 212, 94, 0.4);
+}
+
+/* Cellule sélectionnée (pilote la carte principale) */
+.cell.selected {
+  background: rgba(255, 212, 94, 0.28);
+  border-color: var(--accent);
 }
 
 .hour {
-  font-size: 0.82rem;
-  color: var(--text-muted);
+  font-size: 0.8rem;
+  color: #c5d2ea;
 }
 
 .icon {
-  font-size: 2.4rem;
+  font-size: 2rem;
   line-height: 1;
 }
 
 .temp {
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 600;
 }

@@ -64,9 +64,13 @@ export async function getForecast(latitude, longitude, signal) {
     longitude,
     current:
       'temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,is_day',
-    hourly: 'temperature_2m,weather_code,is_day',
+    // Champs horaires enrichis : permettent d'afficher la carte principale
+    // (ressenti, humidité, vent) pour n'importe quelle heure sélectionnée.
+    hourly:
+      'temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,is_day',
+    // Champs quotidiens enrichis : ressenti max et vent max pour la sélection d'un jour.
     daily:
-      'weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max',
+      'weather_code,temperature_2m_max,temperature_2m_min,apparent_temperature_max,wind_speed_10m_max,precipitation_probability_max',
     timezone: 'auto',
     forecast_days: '7',
   });
