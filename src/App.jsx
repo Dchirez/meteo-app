@@ -33,13 +33,22 @@ export default function App() {
   const { favorites, isFavorite, toggleFavorite, removeFavorite } = useFavorites();
   const { data, loading, error, refetch } = useWeather(city);
 
-  // Au chargement : on tente la géolocalisation, sinon fallback Paris.
+  // Sélection de la ville initiale, au montage uniquement (deps vides) :
+  // on ne dépend PAS de `favorites` pour ne pas réinitialiser la ville à chaque
+  // ajout/retrait de favori. On lit les favoris présents au chargement.
   useEffect(() => {
     let cancelled = false;
+
+    // 1) Priorité aux favoris : on affiche le 1er favori (= le dernier ajouté).
+    if (favorites.length > 0) {
+      setCity(favorites[0]);
+      return;
+    }
+
+    // 2) Sinon : géolocalisation, avec fallback Paris.
     locate()
       .then((coords) => {
         if (cancelled) return;
-        // On affiche les coordonnées (sans nom de ville issu de l'API).
         setCity({ ...coords, name: 'Ma position', admin1: '', country: '' });
       })
       .catch(() => {
@@ -48,7 +57,8 @@ export default function App() {
     return () => {
       cancelled = true;
     };
-  }, [locate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Rafraîchissement manuel (bouton ↻ / pull-to-refresh).
   async function handleRefresh() {
