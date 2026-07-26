@@ -48,19 +48,19 @@
 
 /* Heure courante */
 .cell.now {
-  background: rgba(255, 212, 94, 0.16);
-  border-color: rgba(255, 212, 94, 0.4);
+  background: rgba(249, 115, 22, 0.16);
+  border-color: rgba(249, 115, 22, 0.45);
 }
 
 /* Cellule sélectionnée (pilote la carte principale) */
 .cell.selected {
-  background: rgba(255, 212, 94, 0.28);
+  background: rgba(249, 115, 22, 0.28);
   border-color: var(--accent);
 }
 
 .hour {
   font-size: 0.8rem;
-  color: #c5d2ea;
+  color: var(--text-body);
 }
 
 .icon {

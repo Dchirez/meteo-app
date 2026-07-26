@@ -44,7 +44,7 @@
   right: 0;
   z-index: 20;
   list-style: none;
-  background: #102a4c;
+  background: var(--surface-raised);
   border: 1px solid var(--card-border);
   border-radius: var(--radius-sm);
   overflow: hidden;

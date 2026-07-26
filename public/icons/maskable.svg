@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <!-- Icône maskable : le contenu reste dans la "safe zone" centrale (~80%) -->
-  <rect width="512" height="512" fill="#0b1f3a" />
-  <circle cx="230" cy="225" r="58" fill="#ffd45e" />
+  <rect width="512" height="512" fill="#09090b" />
+  <circle cx="230" cy="225" r="58" fill="#f97316" />
   <path
     d="M345 305a56 56 0 0 0-6-111 77 77 0 0 0-149 21 64 64 0 0 0 13 126h136a42 42 0 0 0 6-82z"
-    fill="#e9f1ff"
+    fill="#fafafa"
   />
 </svg>

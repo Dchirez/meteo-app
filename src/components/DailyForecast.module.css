@@ -45,7 +45,7 @@
 }
 
 .row.selected {
-  background: rgba(255, 212, 94, 0.14);
+  background: rgba(249, 115, 22, 0.14);
 }
 
 .day {
@@ -68,7 +68,7 @@
 .rain {
   flex: 0 0 auto;
   font-size: 0.78rem;
-  color: #8fd0ff;
+  color: var(--accent-2);
   white-space: nowrap;
 }
 
@@ -103,5 +103,5 @@
   top: 0;
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, #6fb4ff, var(--accent));
+  background: var(--brand-gradient);
 }
