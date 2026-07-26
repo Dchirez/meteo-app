@@ -16,8 +16,8 @@
 }
 
 .chip.active {
-  background: rgba(255, 212, 94, 0.16);
-  border-color: rgba(255, 212, 94, 0.4);
+  background: rgba(249, 115, 22, 0.16);
+  border-color: rgba(249, 115, 22, 0.45);
 }
 
 .name {

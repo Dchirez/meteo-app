@@ -32,6 +32,7 @@
 }
 
 .city {
+  font-family: var(--font-display);
   font-size: 1.5rem;
   font-weight: 700;
   line-height: 1.15;
@@ -73,7 +74,7 @@
   align-items: center;
   background: rgba(255, 255, 255, 0.08);
   color: var(--accent);
-  border: 1px solid rgba(255, 212, 94, 0.33);
+  border: 1px solid var(--border-accent);
   border-radius: 999px;
   padding: 5px 12px;
   font-size: 0.76rem;
@@ -84,7 +85,7 @@
 .reset {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.16);
-  color: #dfe7f7;
+  color: var(--text-body);
   border-radius: 999px;
   padding: 5px 12px;
   font-size: 0.76rem;
@@ -116,14 +117,15 @@
 }
 
 .temp {
+  font-family: var(--font-display);
   font-size: 3.8rem;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 0.95;
   letter-spacing: -0.03em;
 }
 
 .label {
-  color: #dfe7f7;
+  color: var(--text-body);
   margin-top: 6px;
   font-weight: 500;
 }
