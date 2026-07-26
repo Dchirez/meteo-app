@@ -11,7 +11,7 @@
    à chaque build (CSS Modules), donc un index.html périmé pointerait vers des
    assets qui n'existent plus → styles cassés. */
 
-const CACHE_VERSION = 'meteo-v2';
+const CACHE_VERSION = 'meteo-v3';
 const APP_SHELL = ['./', './index.html', './manifest.json', './icons/icon.svg'];
 
 // Installation : on pré-cache l'app shell.
